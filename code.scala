@@ -1,17 +1,33 @@
+import scala.collection.immutable.Map
+
 object Code {
     // Returns "Hello World!"
-    def helloWorld() : String = {
-        throw new Exception("Not Implemented");
-    }
+    def helloWorld() : String = "Hello World!"
 
     // Take a single-spaced <sentence>, and capitalize every <n> word starting with <offset>.
     def capitalizeEveryNthWord(sentence:String, offset:Integer, n:Integer) : String = {
-        throw new Exception("Not Implemented");
+        sentence.split(" ")
+                .zipWithIndex
+                .map {
+                  case (value, key) if ((key >= offset) && (key % n == 0)) => value.capitalize
+                  case (value, key) => value
+                }
+                .mkString(" ")
     }
     
     // Determine if a number is prime
     def isPrime(n:Integer) : Boolean = {
-        throw new Exception("Not Implemented");
+      def updateSieve(sieve:Map[Integer, Integer], current: Integer) : Map[Integer, Integer] = {
+        val newSieve = sieve map {
+          case(key, value) if value < current => key -> ((value + key): Integer)
+          case(key, value) => key -> (value)
+        }
+        if (!newSieve.values.exists(_ == current)) (newSieve + (current -> current)) else newSieve
+      }
+      def isPrime(n:Integer, sieve:Map[Integer, Integer], current:Integer) : Boolean = {
+        if (current > n) sieve.contains(n) else isPrime(n, updateSieve(sieve, current), current + 1)
+      }
+      isPrime(n, Map(), 2)
     }
     
     // Calculate the golden ratio.
@@ -21,19 +37,30 @@ object Code {
     // Let e = c + d, then the ratio e / d is closer to the golden ratio.
     // If you continue this process, the result will trend towards the golden ratio.
     def goldenRatio(a:Double, b:Double) : Double = {
-        throw new Exception("Not Implemented");
+      def goldenRatio(a:Double, b:Double, epsilon:Double) : Double = {
+        if (Math.abs((b / a) - ((a + b) / b)) > epsilon) goldenRatio(b, a + b, epsilon) else ((a + b) / b)
+      }
+      goldenRatio(a, b, 0.00005)
     }
 
     // Give the nth Fibonacci number
     // Starting with 0, 1, 1, 2, ... a Fibonacci number is the sum of the previous two.
     def fibonacci(n:Integer) : Integer = {
-        throw new Exception("Not Implemented");
+      lazy val fibs:Stream[Int] = 0 #:: fibs.scanLeft(1)(_ + _)
+      fibs.drop(n).head
     }
     
     // Give the square root of a number
     // Using a binary search algorithm, search for the square root of a given number.
     // Do not use the built-in square root function.
     def squareRoot(n:Double) : Double = {
-        throw new Exception("Not Implemented");
+      def iterate(low:Double, high:Double, epsilon:Double) : Double = {
+        if ((high - low) < epsilon) high else recalculate(low, high, epsilon)
+      }
+      def recalculate(low:Double, high:Double, epsilon:Double) : Double = {
+        val mid = low + ((high - low) / 2.0)
+        if ((mid * mid) < n) iterate(mid, high, epsilon) else iterate(low, mid, epsilon)
+      }
+      iterate(0, n, 10e-16)
     }
 }
