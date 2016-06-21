@@ -22,10 +22,12 @@ object Code {
           case(key, value) if value < current => key -> ((value + key): Integer)
           case(key, value) => key -> (value)
         }
-        if (!newSieve.values.exists(_ == current)) (newSieve + (current -> current)) else newSieve
+        if (!newSieve.values.exists(_ == current)) (newSieve + (current -> current))
+        else                                       newSieve
       }
       def isPrime(n:Integer, sieve:Map[Integer, Integer], current:Integer) : Boolean = {
-        if (current > n) sieve.contains(n) else isPrime(n, updateSieve(sieve, current), current + 1)
+        if (current > n) sieve.contains(n)
+        else             isPrime(n, updateSieve(sieve, current), current + 1)
       }
       isPrime(n, Map(), 2)
     }
@@ -38,7 +40,8 @@ object Code {
     // If you continue this process, the result will trend towards the golden ratio.
     def goldenRatio(a:Double, b:Double) : Double = {
       def goldenRatio(a:Double, b:Double, epsilon:Double) : Double = {
-        if (Math.abs((b / a) - ((a + b) / b)) > epsilon) goldenRatio(b, a + b, epsilon) else ((a + b) / b)
+        if (Math.abs((b / a) - ((a + b) / b)) > epsilon) goldenRatio(b, a + b, epsilon)
+        else                                             ((a + b) / b)
       }
       goldenRatio(a, b, 0.00005)
     }
@@ -55,11 +58,12 @@ object Code {
     // Do not use the built-in square root function.
     def squareRoot(n:Double) : Double = {
       def iterate(low:Double, high:Double, epsilon:Double) : Double = {
-        if ((high - low) < epsilon) high else recalculate(low, high, epsilon)
-      }
-      def recalculate(low:Double, high:Double, epsilon:Double) : Double = {
-        val mid = low + ((high - low) / 2.0)
-        if ((mid * mid) < n) iterate(mid, high, epsilon) else iterate(low, mid, epsilon)
+        if ((high - low) > epsilon) {
+          val mid = low + ((high - low) / 2.0)
+          if ((mid * mid) < n) iterate(mid, high, epsilon)
+          else                 iterate(low, mid, epsilon)
+        }
+        else high
       }
       iterate(0, n, 10e-16)
     }
