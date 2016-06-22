@@ -6,13 +6,12 @@ object Code {
 
     // Take a single-spaced <sentence>, and capitalize every <n> word starting with <offset>.
     def capitalizeEveryNthWord(sentence:String, offset:Integer, n:Integer) : String = {
-        sentence.split(" ")
-                .zipWithIndex
-                .map {
-                  case (value, key) if ((key >= offset) && (key % n == 0)) => value.capitalize
-                  case (value, key) => value
-                }
-                .mkString(" ")
+      val words = sentence.split(" ")
+      (0 to (words.size - 1)).map {
+        case(key) if ((key >= offset) && (key % n == 0)) => words(key).capitalize
+        case(key) => words(key)
+      }
+      .mkString(" ")
     }
     
     // Determine if a number is prime
